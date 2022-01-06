@@ -1,0 +1,65 @@
+use('sample_training')
+// use('sample_airbnb')
+
+// Upserting
+db.iot.updateOne({ "sensor": r.sensor, "date": r.date, "valcount": { "$lt": 48 } }, { "$push": { "readings": { "v": r.value, "t": r.time } }, "$inc": { "valcount": 1, "total": r.value } }, { "upsert": true })
+
+// Indexes
+// db.trips.find({ "birth year": 1989 })
+// db.trips.find({ "start station id": 476 }).sort( { "birth year": 1 } )
+// db.trips.createIndex({ "birth year": 1 })
+// db.trips.createIndex({ "start station id": 1, "birth year": 1 })
+
+// db.trips.find({"birth year": {$ne: null, $ne: ""}}, {_id: 0, "birth year": 1}).sort({ "birth year": -1}).limit(10)
+
+// note that mongodb assumes I mean .sort().limit() instead of the intentionally-wrong .limit().sort()
+// db.companies.find({ "founded_year": { "$ne": null }}, { "name": 1, "founded_year": 1, _id: 0 }).limit(5).sort({ "founded_year": 1 })
+// db.companies.find({ "founded_year": { "$ne": null }}, { "name": 1, "founded_year": 1 }).sort({ "founded_year": 1 }).limit(5)
+
+
+// db.zips.find().sort({ "pop": 1 }).limit(1)
+
+// db.zips.find({ "pop": 0 }).count()
+
+// db.zips.find().sort({ "pop": -1 }).limit(1)
+
+// db.zips.find().sort({ "pop": -1 }).limit(10)
+
+// db.zips.find({}, {_id: 0, pop: 1, city: 1, state: 1}).sort({ "pop": 1, "city": 1 }).skip(10)
+
+// db.listingsAndReviews.aggregate([{ $project: { "room_type": 1, "_id": 0 }}, { $group: { "_id": "$room_type", count: { $sum: 1}}}])
+// db.listingsAndReviews.findOne({ },{ "room_type": 1, "_id": 0 })
+
+// MQL vs Aggregation
+// db.listingsAndReviews.aggregate([ { "$project": { "address": 1, "_id": 0 }}, { "$group": { "_id": "$address.country", "count": { "$sum": 1 } } } ])
+// db.listingsAndReviews.aggregate([ { "$project": { "address": 1, "_id": 0 }}, { "$group": { "_id": "$address.country" }}])
+// db.listingsAndReviews.findOne({ },{ "address": 1, "_id": 0 })
+// db.listingsAndReviews.aggregate([ { "$match": { "amenities": "Wifi" } }, { "$project": { "price": 1, "address": 1, "_id": 0 }}]).pretty()
+// db.listingsAndReviews.find({ "amenities": "Wifi" }, { "price": 1, "address": 1, "_id": 0 }).pretty()
+// db.inspections.find({ "address.city": "NEW YORK"}).count()
+
+// db.trips.find({ "start station location.coordinates.0": { $lt: -74 }}).count()
+
+// db.companies.find({ "relationships.0.person.first_name": "Mark", "relationships.0.title": {"$regex": "CEO" } }, { "name": 1, _id: 0 }).pretty()
+
+// db.companies.find({ "relationships": { "$elemMatch": { "is_past": true, "person.first_name": "Mark" } } }, { "name": 1 }).pretty()
+
+// db.companies.find({ "relationships": { "$elemMatch": { "is_past": true, "person.first_name": "Mark" } } }, { "name": 1 }).count()
+
+// db.companies.find({ "funding_rounds": { "$size": 8 } },
+//                   { "name": 1, "_id": 0 })
+
+// db.companies.find().count()
+// db.companies.find({ offices: { $elemMatch: { city: "Seattle"}}}).count()
+
+// db.grades.find({ class_id: 431 })
+// db.grades.find({ "class_id": 431 },
+//                { "scores": { "$elemMatch": { "score": { "$gt": 85 } } }, _id: 0 } ).pretty()
+
+// db.listingsAndReviews.find({ "amenities": { "$size": 20, "$all": [
+//     "Internet", "Wifi",  "Kitchen", "Heating",
+//     "Family/kid friendly", "Washer", "Dryer",
+//     "Essentials", "Shampoo", "Hangers",
+//     "Hair dryer", "Iron",
+//     "Laptop friendly workspace" ] } },
+//     {"price": 1, "address": 1, "_id": 0}).pretty()
